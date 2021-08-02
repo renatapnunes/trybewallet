@@ -1,8 +1,8 @@
 export const LOGIN_DONE = 'LOGIN_DONE';
 
-const actionLogin = (email) => ({
+const login = (email) => ({
   type: LOGIN_DONE,
   payload: email,
 });
 
-export default actionLogin;
+export default login;

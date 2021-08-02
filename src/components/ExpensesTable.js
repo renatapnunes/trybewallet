@@ -12,10 +12,10 @@ class ExpensesTable extends Component {
   }
 
   handleClink({ target }) {
-    const { expenses, setExpenses } = this.props;
+    const { expenses, setDeleteExpenses } = this.props;
     const deletedExpense = expenses.filter(({ id }) => id !== +target.value);
 
-    setExpenses(deletedExpense);
+    setDeleteExpenses(deletedExpense);
   }
 
   expenseLine() {
@@ -88,12 +88,12 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setExpenses: (expenses) => dispatch(deleteExpenses(expenses)),
+  setDeleteExpenses: (expenses) => dispatch(deleteExpenses(expenses)),
 });
 
 ExpensesTable.propTypes = {
   expenses: PropTypes.arrayOf(Object).isRequired,
-  setExpenses: PropTypes.func.isRequired,
+  setDeleteExpenses: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpensesTable);

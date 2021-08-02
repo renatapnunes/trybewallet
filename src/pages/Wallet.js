@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import fetchApi from '../actions/fetchApi';
+import getCurrencies from '../actions/getCurrencies';
 import ExpenseInput from '../components/ExpenseInput';
 import ExpensesTable from '../components/ExpensesTable';
 
@@ -13,8 +13,8 @@ class Wallet extends React.Component {
   }
 
   componentDidMount() {
-    const { setFetchApi } = this.props;
-    setFetchApi();
+    const { setGetCurrencies } = this.props;
+    setGetCurrencies();
   }
 
   calculateExpenses() {
@@ -54,13 +54,13 @@ const mapStateToPrpos = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setFetchApi: () => dispatch(fetchApi()),
+  setGetCurrencies: () => dispatch(getCurrencies()),
 });
 
 Wallet.propTypes = {
   email: PropTypes.string.isRequired,
   expenses: PropTypes.arrayOf(Object).isRequired,
-  setFetchApi: PropTypes.func.isRequired,
+  setGetCurrencies: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToPrpos, mapDispatchToProps)(Wallet);

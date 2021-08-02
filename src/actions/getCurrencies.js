@@ -18,7 +18,7 @@ const apiError = (error) => ({
   payload: error,
 });
 
-const fetchApi = () => async (dispatch) => {
+const getCurrencies = () => async (dispatch) => {
   dispatch(loading());
   try {
     const request = await fetch('https://economia.awesomeapi.com.br/json/all');
@@ -29,4 +29,4 @@ const fetchApi = () => async (dispatch) => {
   }
 };
 
-export default fetchApi;
+export default getCurrencies;

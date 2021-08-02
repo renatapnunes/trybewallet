@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import actionLogin from '../actions/actionLogin';
+import login from '../actions/login';
 
 class Login extends React.Component {
   constructor() {
@@ -41,22 +41,16 @@ class Login extends React.Component {
       checked = false;
     }
 
-    // if (checked) {
-    //   console.log('Não verificado');
-    // } else {
-    //   console.log('Verificado');
-    // }
-
     this.setState({
       buttonStatus: checked,
     });
   }
 
   submitLogin() {
-    const { setEmail } = this.props;
+    const { setLogin } = this.props;
     const { email } = this.state;
 
-    setEmail(email);
+    setLogin(email);
 
     this.setState({
       email: '',
@@ -100,11 +94,11 @@ class Login extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  setEmail: (email) => dispatch(actionLogin(email)),
+  setLogin: (email) => dispatch(login(email)),
 });
 
 Login.propTypes = ({
-  setEmail: PropTypes.func.isRequired,
+  setLogin: PropTypes.func.isRequired,
 });
 
 export default connect(null, mapDispatchToProps)(Login);

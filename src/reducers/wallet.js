@@ -1,4 +1,4 @@
-import { LOADING, API_SUCESS, API_ERROR } from '../actions/fetchApi';
+import { LOADING, API_SUCESS, API_ERROR } from '../actions/getCurrencies';
 import { ADD_EXPENSE } from '../actions/addExpenses';
 import { DELETE_EXPENSE } from '../actions/deleteExpenses';
 

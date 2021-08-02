@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import fetchApi from '../actions/fetchApi';
+import getCurrencies from '../actions/getCurrencies';
 import addExpenses from '../actions/addExpenses';
+
+const defaultTag = 'Alimentação';
 
 class ExpenseIpunt extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      value: 0,
+      value: (0.00).toFixed(2),
       description: '',
       currency: 'USD',
       method: 'Dinheiro',
-      tag: 'Alimentação',
+      tag: defaultTag,
       exchangeRates: {},
       id: 0,
     };
@@ -37,32 +39,34 @@ class ExpenseIpunt extends Component {
   }
 
   async handleClick() {
-    const { setFetchApi, currencies, setExpenses } = this.props;
+    const { setGetCurrencies, currencies, setAddExpenses } = this.props;
 
-    await setFetchApi();
+    await setGetCurrencies();
 
     await this.setState({
       exchangeRates: currencies,
     });
 
-    await setExpenses(this.state);
+    await setAddExpenses(this.state);
 
     this.updateState();
   }
 
   updateState() {
     this.setState((prevState) => ({
-      value: 0,
+      value: (0.00).toFixed(2),
       description: '',
       currency: 'USD',
       method: 'Dinheiro',
-      tag: 'Outro',
+      tag: defaultTag,
       exchangeRates: {},
       id: prevState.id + 1,
     }));
   }
 
   inputValue() {
+    const { value } = this.state;
+
     return (
       <label htmlFor="value">
         Valor
@@ -71,12 +75,15 @@ class ExpenseIpunt extends Component {
           id="value"
           name="value"
           onChange={ this.handleChange }
+          value={ value }
         />
       </label>
     );
   }
 
   inputDescription() {
+    const { description } = this.state;
+
     return (
       <label htmlFor="description">
         Descrição
@@ -85,16 +92,18 @@ class ExpenseIpunt extends Component {
           id="description"
           name="description"
           onChange={ this.handleChange }
+          value={ description }
         />
       </label>
     );
   }
 
   selectCurrency() {
+    const { currency } = this.state;
     const { currencies } = this.props;
 
     const currenciesFiltered = Object.keys(currencies)
-      .filter((currency) => currency !== 'USDT');
+      .filter((currencyName) => currencyName !== 'USDT');
 
     return (
       <label htmlFor="currency">
@@ -103,9 +112,10 @@ class ExpenseIpunt extends Component {
           id="currency"
           name="currency"
           onChange={ this.handleChange }
+          value={ currency }
         >
-          { currenciesFiltered.map((currency) => (
-            <option key={ currency } value={ currency }>{ currency }</option>
+          { currenciesFiltered.map((opCurrency) => (
+            <option key={ opCurrency } value={ opCurrency }>{ opCurrency }</option>
           ))}
         </select>
       </label>
@@ -113,6 +123,7 @@ class ExpenseIpunt extends Component {
   }
 
   selectMethod() {
+    const { method } = this.state;
     const methods = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 
     return (
@@ -122,9 +133,10 @@ class ExpenseIpunt extends Component {
           id="method"
           name="method"
           onChange={ this.handleChange }
+          value={ method }
         >
-          { methods.map((method) => (
-            <option key={ method } value={ method }>{ method }</option>
+          { methods.map((opMethod) => (
+            <option key={ opMethod } value={ opMethod }>{ opMethod }</option>
           ))}
         </select>
       </label>
@@ -132,6 +144,7 @@ class ExpenseIpunt extends Component {
   }
 
   selectTag() {
+    const { tag } = this.state;
     const tags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde', 'Outro'];
 
     return (
@@ -141,9 +154,10 @@ class ExpenseIpunt extends Component {
           id="tag"
           name="tag"
           onChange={ this.handleChange }
+          value={ tag }
         >
-          { tags.map((tag) => (
-            <option key={ tag } value={ tag }>{ tag }</option>
+          { tags.map((opTag) => (
+            <option key={ opTag } value={ opTag }>{ opTag }</option>
           ))}
         </select>
       </label>
@@ -169,14 +183,14 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setFetchApi: () => dispatch(fetchApi()),
-  setExpenses: (expense) => dispatch(addExpenses(expense)),
+  setGetCurrencies: () => dispatch(getCurrencies()),
+  setAddExpenses: (expense) => dispatch(addExpenses(expense)),
 });
 
 ExpenseIpunt.propTypes = ({
   currencies: PropTypes.arrayOf(Object).isRequired,
-  setFetchApi: PropTypes.func.isRequired,
-  setExpenses: PropTypes.func.isRequired,
+  setGetCurrencies: PropTypes.func.isRequired,
+  setAddExpenses: PropTypes.func.isRequired,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpenseIpunt);
