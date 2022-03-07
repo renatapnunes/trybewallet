@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import getCurrencies from '../actions/getCurrencies';
 import addExpenses from '../actions/addExpenses';
+import editExpense from '../actions/editExpense';
 
 const defaultTag = 'Alimentação';
 
@@ -16,7 +17,7 @@ class ExpenseIpunt extends Component {
       currency: 'USD',
       method: 'Dinheiro',
       tag: defaultTag,
-      exchangeRates: {},
+      exchangeRates: [],
       id: 0,
     };
 
@@ -26,8 +27,30 @@ class ExpenseIpunt extends Component {
     this.selectCurrency = this.selectCurrency.bind(this);
     this.selectMethod = this.selectMethod.bind(this);
     this.selectTag = this.selectTag.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.add = this.add.bind(this);
     this.updateState = this.updateState.bind(this);
+    this.edit = this.edit.bind(this);
+    // this.stateEditing = this.stateEditing.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { editing } = this.props;
+    if (prevProps.editing !== editing) {
+      this.stateEditing();
+    }
+  }
+
+  stateEditing() {
+    const { editingExpense } = this.props;
+    this.setState({
+      value: editingExpense.value,
+      description: editingExpense.description,
+      currency: editingExpense.currency,
+      method: editingExpense.method,
+      tag: editingExpense.tag,
+      exchangeRates: editingExpense.exchangeRates,
+      id: editingExpense.id,
+    });
   }
 
   handleChange({ target }) {
@@ -38,13 +61,14 @@ class ExpenseIpunt extends Component {
     });
   }
 
-  async handleClick() {
+  async add() {
     const { setGetCurrencies, currencies, setAddExpenses } = this.props;
+    const arrayCurrencies = [];
+    arrayCurrencies.push(currencies);
 
     await setGetCurrencies();
-
     await this.setState({
-      exchangeRates: currencies,
+      exchangeRates: arrayCurrencies,
     });
 
     await setAddExpenses(this.state);
@@ -59,9 +83,25 @@ class ExpenseIpunt extends Component {
       currency: 'USD',
       method: 'Dinheiro',
       tag: defaultTag,
-      exchangeRates: {},
+      exchangeRates: [],
       id: prevState.id + 1,
     }));
+  }
+
+  edit() {
+    const { setAddExpenses, setEditExpense } = this.props;
+    setAddExpenses(this.state);
+    const resetState = {
+      value: (0.00).toFixed(2),
+      description: '',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: defaultTag,
+      exchangeRates: [],
+      id: 0,
+    };
+
+    setEditExpense(resetState, false);
   }
 
   inputValue() {
@@ -165,6 +205,7 @@ class ExpenseIpunt extends Component {
   }
 
   render() {
+    const { editing } = this.props;
     return (
       <form>
         { this.inputValue() }
@@ -172,7 +213,11 @@ class ExpenseIpunt extends Component {
         { this.selectCurrency() }
         { this.selectMethod() }
         { this.selectTag() }
-        <button type="button" onClick={ this.handleClick }>Adicionar despesa</button>
+        {
+          editing
+            ? <button type="button" onClick={ this.edit }>Editar despesa</button>
+            : <button type="button" onClick={ this.add }>Adicionar despesa</button>
+        }
       </form>
     );
   }
@@ -180,17 +225,23 @@ class ExpenseIpunt extends Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  editingExpense: state.wallet.editingExpense,
+  editing: state.wallet.editing,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setGetCurrencies: () => dispatch(getCurrencies()),
   setAddExpenses: (expense) => dispatch(addExpenses(expense)),
+  setEditExpense: (expense, status) => dispatch(editExpense(expense, status)),
 });
 
 ExpenseIpunt.propTypes = ({
   currencies: PropTypes.arrayOf(Object).isRequired,
+  editingExpense: PropTypes.arrayOf(Object).isRequired,
+  editing: PropTypes.bool.isRequired,
   setGetCurrencies: PropTypes.func.isRequired,
   setAddExpenses: PropTypes.func.isRequired,
+  setEditExpense: PropTypes.func.isRequired,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpenseIpunt);

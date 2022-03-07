@@ -1,12 +1,15 @@
 import { LOADING, API_SUCESS, API_ERROR } from '../actions/getCurrencies';
 import { ADD_EXPENSE } from '../actions/addExpenses';
 import { DELETE_EXPENSE } from '../actions/deleteExpenses';
+import { EDIT_EXPENSE } from '../actions/editExpense';
 
 const INITIAL_STATE = {
   loading: false,
   currencies: [],
   error: '',
   expenses: [],
+  editingExpense: [],
+  editing: false,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
@@ -23,6 +26,8 @@ const wallet = (state = INITIAL_STATE, action) => {
     // const updateExpenses = state.expenses.filter(({ id }) => +id !== +action.payload);
     return { ...state, expenses: action.payload };
   }
+  case EDIT_EXPENSE:
+    return { ...state, editingExpense: action.expense, editing: action.status };
   default:
     return state;
   }
